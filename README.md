@@ -88,3 +88,11 @@ Get inside the project directory and enter the following command line code at te
 ```
 python report.py
 ```
+
+### Running Test Cases
+The test cases can be found inside the report_test.py file.
+To run the test cases, simply run the following command in the terminal:
+```
+python -m unittest report_test.py
+```
+* The -m option instructs python to run the unit test module as a script.

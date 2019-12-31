@@ -2,16 +2,18 @@ import mysql.connector, requests, operator
 import pandas as pd
 
 
-class Report:
+class Report():
+    api = "https://raw.githubusercontent.com/younginnovations/internship-challenges/master/programming/petroleum-report/data.json"
+
     def __init__(self):
+
         self.my_db = mysql.connector.connect(
             host="localhost",
-            user="root",
+            user="mysql_user",
             passwd="bmsingh",
-            database="yipl")
+            database="profileservice")
 
         self.mycursor = self.my_db.cursor()
-        self.api = "https://raw.githubusercontent.com/younginnovations/internship-challenges/master/programming/petroleum-report/data.json"
         self.l_o_d = []
 
     def loadData(self):
@@ -26,7 +28,7 @@ class Report:
         Insert data to MySQL db using execute method.
         :return:
         """
-        sql = "INSERT INTO yipl.challenge(year, petroleumProduct, sale) VALUES (%s, %s, %s)"
+        sql = "INSERT INTO profileservice.challenge(year, petroleumProduct, sale) VALUES (%s, %s, %s)"
         for values in self.loadData():  # doubt
             self.mycursor.execute(sql, [values["year"], values["petroleum_product"], values["sale"]])
 
@@ -37,7 +39,7 @@ class Report:
         This method fetches the data previously loaded to our db as a list of tuples.
         :return:
         """
-        fetch_data_from_db_query = "select * from yipl.challenge"
+        fetch_data_from_db_query = "select * from profileservice.challenge"
         self.mycursor.execute(fetch_data_from_db_query)
         result = list(self.mycursor.fetchall())
         self.my_db.commit()
@@ -106,6 +108,7 @@ class Report:
         # consider as final list to store all dictionaries d1
         final_list = []
 
+        # logic for year (2000 - 2004)
         for p in pp_list:
             for x in self.convert(self.fetchDataFromDB()):
                 if start_year <= int(x['year']) <= self.add_four_years(start_year):
@@ -126,7 +129,7 @@ class Report:
         # plus 4 years added
         modified_year = self.add_four_years(start_year) + 1
 
-        # logic for year (2000 - 2004)
+        # logic for year (2005 - 2009)
         for p in pp_list:
             for x in self.convert(self.fetchDataFromDB()):
                 if modified_year <= int(x['year']) <= self.add_four_years(modified_year):
@@ -147,7 +150,7 @@ class Report:
         # plus 4 years added
         modified_year = self.add_four_years(modified_year) + 1
 
-        # logic for year (2000 - 2004)
+        # logic for year (2010 - 2014)
         for p in pp_list:
             for x in self.convert(self.fetchDataFromDB()):
                 if modified_year <= int(x['year']) <= self.add_four_years(modified_year):
@@ -170,7 +173,7 @@ class Report:
 
     def generateTable(self, insert=False):
         """
-        This method generates a tabular view using the pandas library.
+        This method generates a tabular view of the data using the pandas library.
         This method also gives an option to insert the data fetched from the API to db.
 
         If 'insert=False' , then data is not inserted
